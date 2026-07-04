@@ -54,9 +54,6 @@ export default function Login({ onPick }) {
           <h1>빼박결재 <b>Demo</b><span className="tm">signup</span></h1>
           <p>이름과 팀을 입력하면 바로 데모 계정으로 입장합니다.</p>
           <div className="marquee">같은 팀 코드를 쓰면 팀원과 팀장이 같은 결재 흐름에 연결됩니다.</div>
-          <div className={"login-source " + (hasSupabaseConfig ? "supabase" : "fallback")}>
-            {hasSupabaseConfig ? "🟢 Supabase 연동됨 — 팀원 데이터가 서버에 저장됩니다" : "🟡 로컬 데모 모드 — Supabase 미설정, 이 브라우저에만 저장됩니다"}
-          </div>
           {message && <div className="login-source error">{message}</div>}
         </div>
 

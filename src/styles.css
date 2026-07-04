@@ -446,7 +446,10 @@ p.sub { color: var(--ink-soft); margin: 0; }
   100% { opacity: 0;   transform: translate(-12px,3px) scale(1.25); }
 }
 
-.decided-note { margin: 20px 2px 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.decided-note {
+  margin: 20px 2px 0; display: flex; align-items: center; justify-content: center; gap: 14px;
+  flex-wrap: wrap; font-size: 14px; font-weight: 700; color: var(--ink-soft);
+}
 .decided-note.ok { color: var(--approve-d); }
 
 /* speech bubble taunt */

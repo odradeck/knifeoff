@@ -1,4 +1,4 @@
-import { COMPANY, EMP, LEADER } from "../data.js";
+import { COMPANY, EMP } from "../data.js";
 import { fmtStamp } from "../generate.js";
 
 function MiniStamp({ status }) {
@@ -24,7 +24,8 @@ function fallbackLeader(doc, viewer) {
       team: viewer.team_name || viewer.team,
     };
   }
-  return LEADER;
+  const teamCode = doc.teamId || doc.teamName || "팀";
+  return { name: teamCode, rank: "팀장", team: doc.teamName || teamCode };
 }
 
 export default function DocView({ doc, stamped, viewer }) {

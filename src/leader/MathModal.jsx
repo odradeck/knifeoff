@@ -3,16 +3,9 @@ import katex from "katex";
 import { MATH_PROBLEMS, WRONG, CAT_MISS } from "../data.js";
 import { toast } from "../ui.js";
 
-function randomIndex(exclude) {
-  if (MATH_PROBLEMS.length <= 1) return 0;
-  let next;
-  do { next = Math.floor(Math.random() * MATH_PROBLEMS.length); } while (next === exclude);
-  return next;
-}
-
 // 칼퇴 거절용 '풀 수 없는 반려 시험'. 어떤 답도 통과 처리되지 않으며, 유일한 탈출구는 '포기하고 승인'.
 export default function MathModal({ onApprove, onClose }) {
-  const [index, setIndex] = useState(() => randomIndex());
+  const [index, setIndex] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [verdict, setVerdict] = useState("");
   const [startedAt, setStartedAt] = useState(() => Date.now());
@@ -63,7 +56,7 @@ export default function MathModal({ onApprove, onClose }) {
   }
 
   function anotherProblem() {
-    setIndex((cur) => randomIndex(cur));
+    setIndex((cur) => (cur + 1) % MATH_PROBLEMS.length);
     setAttempts(0);
     setVerdict("");
     setStartedAt(Date.now());

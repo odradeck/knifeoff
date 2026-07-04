@@ -52,8 +52,11 @@ export default function LeaderApp({ docs, user, onUpdate, selectedId, onSelect }
 
         {decided ? (
           <div className={"decided-note " + (doc.status === "approved" ? "ok" : "")}>
-            {doc.status === "approved" ? "이미 승인 처리된 결재입니다." : "반려 처리된 결재입니다."}
-            {" · "}{fmtStamp(doc.decidedAt)}
+            <span>
+              {doc.status === "approved" ? "이미 승인 처리된 결재입니다." : "반려 처리된 결재입니다."}
+              {" · "}{fmtStamp(doc.decidedAt)}
+            </span>
+            <button className="btn btn-primary" onClick={() => onSelect(null)}>기안 목록으로</button>
           </div>
         ) : (
           <div className="decide-bar">

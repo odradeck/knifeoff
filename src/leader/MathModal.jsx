@@ -26,6 +26,16 @@ export default function MathModal({ onApprove, onClose }) {
     [problem]
   );
 
+  // 고양이 문제용: 빈 박스가 아니라 '고양이 닮은 강아지/여우' 무리로 채운다. (정작 고양이는 없음)
+  const catCrowd = useMemo(() => {
+    const pool = ["🐶", "🐕", "🐩", "🦮", "🐺", "🦊", "🐶", "🦊", "🐕‍🦺"];
+    return Array.from({ length: 28 }, () => ({
+      e: pool[Math.floor(Math.random() * pool.length)],
+      rot: Math.round(Math.random() * 36 - 18),
+      scale: (0.85 + Math.random() * 0.45).toFixed(2),
+    }));
+  }, [index]);
+
   useEffect(() => {
     if (problem.type === "tex") inputRef.current && inputRef.current.focus();
     const iv = setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
@@ -68,13 +78,17 @@ export default function MathModal({ onApprove, onClose }) {
       <div className={"modal" + (shake ? " shake" : "")} role="dialog" aria-modal="true">
         <div className="m-head">
           <div className="m-kick">거절 자격 검증 · KNIFEOFF 반려 시험</div>
-          <h3>🧮 아래 문제를 풀어야 거절할 수 있습니다</h3>
+          <h3>{problem.type === "cat" ? "🐱 고양이를 찾아주세요" : "🧮 아래 문제를 풀어야 거절할 수 있습니다"}</h3>
         </div>
         <div className="m-body">
           {problem.type === "tex" ? (
             <div className="exam" dangerouslySetInnerHTML={{ __html: problemHtml }} />
           ) : (
-            <div className="exam cat-box" onClick={catMiss} />
+            <div className="exam cat-box" onClick={catMiss}>
+              {catCrowd.map((c, i) => (
+                <span key={i} className="cat-decoy" style={{ transform: `rotate(${c.rot}deg) scale(${c.scale})` }}>{c.e}</span>
+              ))}
+            </div>
           )}
           <div className="exam-meta">
             <span>고민한 시간: <b>{mm}:{ss}</b></span>
@@ -87,7 +101,7 @@ export default function MathModal({ onApprove, onClose }) {
               <button className="btn btn-primary" onClick={submit}>제출</button>
             </div>
           ) : (
-            <p className="cat-hint">※ 고양이는 없지만 고양이를 찾아내세요.</p>
+            <p className="cat-hint">※ 강아지들 사이에 숨은 고양이를 찾아 클릭하면 거절할 수 있습니다.</p>
           )}
           <div className="verdict wrong">{verdict || " "}</div>
         </div>

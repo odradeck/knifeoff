@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import katex from "katex";
 import { MATH_PROBLEMS, WRONG } from "../data.js";
 import { toast } from "../ui.js";
 
 // 칼퇴 거절용 '풀 수 없는 수학문제'. 어떤 답도 오답 처리되며, 유일한 탈출구는 '포기하고 승인'.
 export default function MathModal({ onApprove, onClose }) {
   const problem = useMemo(() => MATH_PROBLEMS[Math.floor(Math.random() * MATH_PROBLEMS.length)], []);
+  const problemHtml = useMemo(
+    () => katex.renderToString(problem, { displayMode: true, throwOnError: false, output: "html" }),
+    [problem]
+  );
   const [attempts, setAttempts] = useState(0);
   const [verdict, setVerdict] = useState("");
   const [elapsed, setElapsed] = useState(0);
@@ -41,7 +46,7 @@ export default function MathModal({ onApprove, onClose }) {
           <h3>🧮 아래 문제를 풀면 거절할 수 있습니다</h3>
         </div>
         <div className="m-body">
-          <div className="exam"><span className="kbd">{problem}</span></div>
+          <div className="exam" dangerouslySetInnerHTML={{ __html: problemHtml }} />
           <div className="exam-meta">
             <span>고민한 시간: <b>{mm}:{ss}</b></span>
             <span>시도 <b>{attempts}</b>회 · 거절 확률 <b className="red">0%</b></span>

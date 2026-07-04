@@ -4,6 +4,7 @@ import { fmtStamp } from "../generate.js";
 import { confettiBurst, toast } from "../ui.js";
 import DocView from "../components/DocView.jsx";
 import RunawayButton from "./RunawayButton.jsx";
+import CaptchaModal from "./CaptchaModal.jsx";
 import MathModal from "./MathModal.jsx";
 
 function statusKo(s) { return s === "approved" ? "승인됨" : s === "rejected" ? "반려됨" : "대기중"; }
@@ -11,11 +12,12 @@ function statusKo(s) { return s === "approved" ? "승인됨" : s === "rejected" 
 export default function LeaderApp({ docs, onUpdate, selectedId, onSelect }) {
   const [tab, setTab] = useState("pending");
   const [stamped, setStamped] = useState(false);
+  const [captchaOpen, setCaptchaOpen] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
 
   const selected = selectedId ? docs.find((d) => d.id === selectedId) : null;
 
-  useEffect(() => { setStamped(false); setMathOpen(false); }, [selectedId]);
+  useEffect(() => { setStamped(false); setCaptchaOpen(false); setMathOpen(false); }, [selectedId]);
 
   function approve(doc) {
     setMathOpen(false);
@@ -50,11 +52,17 @@ export default function LeaderApp({ docs, onUpdate, selectedId, onSelect }) {
           <div className="decide-bar">
             {doc.type === "annual"
               ? <RunawayButton />
-              : <button className="btn btn-reject" onClick={() => setMathOpen(true)}>✋ 거절</button>}
+              : <button className="btn btn-reject" onClick={() => setCaptchaOpen(true)}>✋ 거절</button>}
             <button className="btn btn-approve" onClick={() => approve(doc)}>✅ 승인</button>
           </div>
         )}
 
+        {captchaOpen && (
+          <CaptchaModal
+            onVerified={() => { setCaptchaOpen(false); setMathOpen(true); }}
+            onClose={() => setCaptchaOpen(false)}
+          />
+        )}
         {mathOpen && (
           <MathModal onApprove={() => approve(doc)} onClose={() => setMathOpen(false)} />
         )}

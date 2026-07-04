@@ -1,33 +1,63 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MATH_PROBLEMS, WRONG } from "../data.js";
+import katex from "katex";
+import { MATH_PROBLEMS, WRONG, CAT_MISS } from "../data.js";
 import { toast } from "../ui.js";
 
-// 칼퇴 거절용 '풀 수 없는 수학문제'. 어떤 답도 오답 처리되며, 유일한 탈출구는 '포기하고 승인'.
+function randomIndex(exclude) {
+  if (MATH_PROBLEMS.length <= 1) return 0;
+  let next;
+  do { next = Math.floor(Math.random() * MATH_PROBLEMS.length); } while (next === exclude);
+  return next;
+}
+
+// 칼퇴 거절용 '풀 수 없는 반려 시험'. 어떤 답도 통과 처리되지 않으며, 유일한 탈출구는 '포기하고 승인'.
 export default function MathModal({ onApprove, onClose }) {
-  const problem = useMemo(() => MATH_PROBLEMS[Math.floor(Math.random() * MATH_PROBLEMS.length)], []);
+  const [index, setIndex] = useState(() => randomIndex());
   const [attempts, setAttempts] = useState(0);
   const [verdict, setVerdict] = useState("");
+  const [startedAt, setStartedAt] = useState(() => Date.now());
   const [elapsed, setElapsed] = useState(0);
   const [shake, setShake] = useState(false);
   const inputRef = useRef(null);
 
+  const problem = MATH_PROBLEMS[index];
+  const problemHtml = useMemo(
+    () => (problem.type === "tex" ? katex.renderToString(problem.tex, { displayMode: true, throwOnError: false, output: "html" }) : ""),
+    [problem]
+  );
+
   useEffect(() => {
-    inputRef.current && inputRef.current.focus();
-    const started = Date.now();
-    const iv = setInterval(() => setElapsed(Math.floor((Date.now() - started) / 1000)), 1000);
+    if (problem.type === "tex") inputRef.current && inputRef.current.focus();
+    const iv = setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
     return () => clearInterval(iv);
-  }, []);
+  }, [startedAt, problem.type]);
+
+  function bump(msg) {
+    const next = attempts + 1;
+    setAttempts(next);
+    setVerdict(msg);
+    setShake(false);
+    requestAnimationFrame(() => setShake(true));
+    if (next === 4) toast("힌트: 이 시험은 통과할 수 없습니다 🤫");
+  }
 
   function submit() {
     const v = inputRef.current;
     if (!v || !v.value.trim()) { v && v.focus(); return; }
-    const next = attempts + 1;
-    setAttempts(next);
-    setVerdict(WRONG[Math.min(next - 1, WRONG.length - 1)]);
-    setShake(false);
-    requestAnimationFrame(() => setShake(true));
+    bump(WRONG[Math.min(attempts, WRONG.length - 1)]);
     v.value = ""; v.focus();
-    if (next === 4) toast("힌트: 이 문제는 풀 수 없습니다 🤫");
+  }
+
+  function catMiss() {
+    bump(CAT_MISS[Math.min(attempts, CAT_MISS.length - 1)]);
+  }
+
+  function anotherProblem() {
+    setIndex((cur) => randomIndex(cur));
+    setAttempts(0);
+    setVerdict("");
+    setStartedAt(Date.now());
+    setElapsed(0);
   }
 
   const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
@@ -38,24 +68,32 @@ export default function MathModal({ onApprove, onClose }) {
       <div className={"modal" + (shake ? " shake" : "")} role="dialog" aria-modal="true">
         <div className="m-head">
           <div className="m-kick">거절 자격 검증 · KNIFEOFF 반려 시험</div>
-          <h3>🧮 아래 문제를 풀면 거절할 수 있습니다</h3>
+          <h3>🧮 아래 문제를 풀어야 거절할 수 있습니다</h3>
         </div>
         <div className="m-body">
-          <div className="exam"><span className="kbd">{problem}</span></div>
+          {problem.type === "tex" ? (
+            <div className="exam" dangerouslySetInnerHTML={{ __html: problemHtml }} />
+          ) : (
+            <div className="exam cat-box" onClick={catMiss} />
+          )}
           <div className="exam-meta">
             <span>고민한 시간: <b>{mm}:{ss}</b></span>
             <span>시도 <b>{attempts}</b>회 · 거절 확률 <b className="red">0%</b></span>
           </div>
-          <div className="answer">
-            <input ref={inputRef} type="text" placeholder="정답을 입력하세요" autoComplete="off"
-              onKeyDown={(e) => { if (e.key === "Enter") submit(); }} />
-            <button className="btn btn-primary" onClick={submit}>제출</button>
-          </div>
-          <div className="verdict wrong">{verdict || " "}</div>
+          {problem.type === "tex" ? (
+            <div className="answer">
+              <input ref={inputRef} type="text" placeholder="정답을 입력하세요" autoComplete="off"
+                onKeyDown={(e) => { if (e.key === "Enter") submit(); }} />
+              <button className="btn btn-primary" onClick={submit}>제출</button>
+            </div>
+          ) : (
+            <p className="cat-hint">※ 고양이는 없지만 고양이를 찾아내세요.</p>
+          )}
+          <div className="verdict wrong">{verdict || " "}</div>
         </div>
         <div className="m-foot">
           <button className="btn btn-ghost" onClick={onApprove}>😮‍💨 포기하고 승인하기</button>
-          <button className={"btn btn-approve" + (attempts >= 3 ? " mega" : "")} onClick={onApprove}>✅ 그냥 승인</button>
+          <button className="btn btn-approve" onClick={anotherProblem}>🔁 다른 문제 풀기</button>
         </div>
       </div>
     </div>

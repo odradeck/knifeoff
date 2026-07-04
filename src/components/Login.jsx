@@ -28,7 +28,6 @@ export default function Login({ onPick }) {
             <div className="enter">결재함 열기 →</div>
           </button>
         </div>
-        <div className="foot-credit">POC · <code>localStorage</code> + <code>Vercel Functions</code> · codename <code>knifeoff</code></div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { fmtStamp } from "../generate.js";
 
 function MiniStamp({ status }) {
   if (status === "approved") return <span className="mini-stamp">승인</span>;
-  if (status === "rejected") return <span className="mini-stamp" style={{ borderColor: "#b91c1c", color: "#b91c1c" }}>반려</span>;
+  if (status === "rejected") return <span className="mini-stamp rejected">반려</span>;
   return <span className="mini-stamp pending">대기</span>;
 }
 
@@ -37,12 +37,10 @@ export default function DocView({ doc, stamped }) {
               <tr>
                 <td className="lbl" rowSpan={2}>결재</td>
                 <td className="who">기안<br />{EMP.name}</td>
-                <td className="who">검토<br />AI 어시스트</td>
                 <td className="who">승인<br />{LEADER.name} {LEADER.rank}</td>
               </tr>
               <tr>
-                <td className="sign"><span className="mini-stamp" style={{ borderColor: "var(--brand)", color: "var(--brand)", transform: "rotate(-8deg)" }}>기안</span></td>
-                <td className="sign"><span className="mini-stamp" style={{ borderColor: "#0f766e", color: "#0f766e", transform: "rotate(6deg)" }}>완료</span></td>
+                <td className="sign"><span className="mini-stamp" style={{ transform: "rotate(-8deg)" }}>기안</span></td>
                 <td className="sign"><MiniStamp status={doc.status} /></td>
               </tr>
             </tbody>
@@ -53,12 +51,7 @@ export default function DocView({ doc, stamped }) {
 
             {doc.plea && (
               <div className="plea-block">
-                <div className="plea-label">
-                  <span>■ 기안 취지</span>
-                  <span className={"plea-src " + (doc.pleaSource === "llm" ? "llm" : "tpl")}>
-                    {doc.pleaSource === "llm" ? "✨ AI 대필" : "✍️ 자동 작성"}
-                  </span>
-                </div>
+                <div className="plea-label"><span>■ 기안 취지</span></div>
                 <p className="plea">{doc.plea}</p>
               </div>
             )}
@@ -96,7 +89,6 @@ export default function DocView({ doc, stamped }) {
 
           <div className="doc-foot">
             <div className="co">{COMPANY}</div>
-            <div>본 문서는 빼박결재 KNIFEOFF™ 엔진으로 자동 생성되었습니다 · 반려 성공률 0.00%</div>
           </div>
         </div>
       </div>

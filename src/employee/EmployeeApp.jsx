@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TYPES, REASONS, GEN_STEPS, EMP, LEADER } from "../data.js";
+import { TYPES, REASONS, GEN_STEPS, EMP } from "../data.js";
 import { generateDoc, fetchPersuasion, todayISO, fmtStamp } from "../generate.js";
 import { confettiBurst } from "../ui.js";
 import DocView from "../components/DocView.jsx";
@@ -53,12 +53,13 @@ function Generating({ type, answers, onDone }) {
   );
 }
 
-export default function EmployeeApp({ docs, onSubmit, onGoLeader }) {
+export default function EmployeeApp({ docs, user, onSubmit }) {
   const [stage, setStage] = useState("home");
   const [type, setType] = useState(null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({ date: todayISO(1), time: "18:00", reason: "", rawReason: "", urgency: "" });
   const [doc, setDoc] = useState(null);
+  const me = user || EMP;
 
   const set = (patch) => setAnswers((a) => ({ ...a, ...patch }));
 
@@ -74,7 +75,7 @@ export default function EmployeeApp({ docs, onSubmit, onGoLeader }) {
       <div className="container narrow">
         <div className="section-head">
           <div className="eyebrow">직원 · 기안 작성</div>
-          <h1 className="title">{EMP.name}님, 오늘은 무엇을 쟁취하시겠어요?</h1>
+          <h1 className="title">{me.name}님, 오늘은 무엇을 쟁취하시겠어요?</h1>
           <p className="sub">목적을 고르면 AI가 <b>팀장님이 거절 못 할 근거</b>와 <b>절절한 읍소문</b>을 알아서 써드립니다.</p>
         </div>
         <div className="purpose-grid">
@@ -94,14 +95,14 @@ export default function EmployeeApp({ docs, onSubmit, onGoLeader }) {
             <h4 style={{ margin: "30px 0 12px", fontSize: 14, color: "var(--ink-soft)" }}>📮 내 상신 내역</h4>
             <div className="inbox">
               {docs.slice(0, 4).map((x) => (
-                <button key={x.id} className={"doc-row " + x.cls} style={{ padding: "12px 14px" }} onClick={() => onGoLeader(x.id)}>
+                <div key={x.id} className={"doc-row " + x.cls} style={{ padding: "12px 14px" }}>
                   <span className="ic" style={{ width: 38, height: 38, fontSize: 20 }}>{x.emoji}</span>
                   <span className="meta">
                     <span className="t" style={{ fontSize: 14 }}>{x.docTitle}</span>
                     <span className="s">{x.when} · {fmtStamp(x.createdAt)}</span>
                   </span>
                   <span className={"badge " + x.status}>{statusKo(x.status)}</span>
-                </button>
+                </div>
               ))}
             </div>
           </>
@@ -221,7 +222,11 @@ export default function EmployeeApp({ docs, onSubmit, onGoLeader }) {
           <h1 className="title">이대로 상신하면 팀장님은 빼도 박도 못합니다 😎</h1>
           <p className="sub">상단 <b>「기안 취지」</b>는 방금 적으신 사유로 생성된 읍소문입니다. 마음에 안 들면 다시 생성하세요.</p>
         </div>
-        <DocView doc={doc} />
+        <DocView doc={{
+          ...doc,
+          employee: user ? { id: user.id, name: user.name, rank: user.rank, team: user.team_name || user.team } : doc.employee,
+          teamName: user ? (user.team_name || user.team) : doc.teamName,
+        }} />
         <div className="wizard-nav" style={{ marginTop: 22 }}>
           <button className="btn btn-ghost" onClick={() => { setStep(0); setStage("wizard"); }}>← 답변 수정</button>
           <div style={{ display: "flex", gap: 12 }}>
@@ -239,16 +244,15 @@ export default function EmployeeApp({ docs, onSubmit, onGoLeader }) {
       <div className="card" style={{ padding: "40px 34px", textAlign: "center" }}>
         <div style={{ fontSize: 60 }}>📤</div>
         <h1 className="title" style={{ marginTop: 10 }}>상신 완료!</h1>
-        <p className="sub">「{doc.docTitle}」이(가) <b>{LEADER.name} {LEADER.rank}</b>님의 결재함으로 날아갔습니다.</p>
+        <p className="sub">「{doc.docTitle}」이(가) <b>{me.team_name || me.team || "같은 팀"} 팀장님</b>의 결재함으로 날아갔습니다.</p>
         <div style={{ background: "var(--brand-soft)", borderRadius: 14, padding: 16, margin: "22px 0", fontSize: 14, color: "var(--brand-ink)" }}>
           문서번호 <b>{doc.docNo}</b> · 현재 상태 <b>대기중</b><br />
           <span style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>이제 팀장님이 할 수 있는 건… 승인뿐입니다.</span>
         </div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <button className="btn btn-primary btn-lg" onClick={() => onGoLeader(doc.id)}>🧑‍💼 팀장 뷰에서 확인하기</button>
-          <button className="btn" onClick={() => { setStage("home"); }}>📝 새 기안 작성</button>
+          <button className="btn btn-primary btn-lg" onClick={() => { setStage("home"); }}>📝 새 기안 작성</button>
         </div>
-        <div className="foot-credit">한 브라우저 데모: 위 버튼으로 팀장 뷰에 바로 전환됩니다.</div>
+        <div className="foot-credit">팀장 계정으로 로그인하면 같은 팀 코드의 결재함에서 확인할 수 있습니다.</div>
       </div>
     </div>
   );

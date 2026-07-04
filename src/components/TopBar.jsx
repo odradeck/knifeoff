@@ -1,11 +1,11 @@
 import { EMP, LEADER } from "../data.js";
 
-export default function TopBar({ role, pendingCount, onHome, onSwitch, onReset }) {
-  const who = role === "leader" ? LEADER : EMP;
+export default function TopBar({ role, user, pendingCount, onHome, onSwitch, onReset }) {
+  const who = user || (role === "leader" ? LEADER : EMP);
   return (
     <div className="topbar">
       <a className="brand" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>
-        <span className="logo">🔪</span>
+        <span className="knife-logo knife-logo-sm" aria-hidden="true">🔪</span>
         <span>
           <span className="name">빼박<b>결재</b><span className="tm">™</span></span>
           <span className="tag">KNIFEOFF · 거절 불가 전자결재</span>

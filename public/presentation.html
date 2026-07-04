@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>빼박결재 KNIFEOFF™ — 발표자료 · 리그오브레거시</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔪</text></svg>" />
+<style>
+  :root{
+    --bg:#eef1f8; --bg2:#e3e8f5; --surface:#fff; --ink:#14181f; --soft:#4b5563; --mute:#8b93a3;
+    --line:#e2e6ef; --line2:#d3d9e6; --brand:#2b44e0; --brand-ink:#1b2ba6; --brand2:#4d63ff;
+    --brand-soft:#eaeeff; --gold:#ffcf33; --gold-ink:#7a5a00; --approve:#16a34a; --reject:#ef4444; --stamp:#d81f2a;
+    --font:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,Roboto,sans-serif;
+    --serif:"AppleMyungjo","Nanum Myeongjo","Batang","Apple SD Gothic Neo",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  body{background:#0c1024;display:grid;place-items:center}
+
+  .deck{position:fixed;inset:0;overflow:hidden}
+  .stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);
+    border-radius:20px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.55)}
+
+  .slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s cubic-bezier(.2,.9,.3,1);
+    transform:translateY(14px) scale(.995);display:flex;flex-direction:column;padding:72px 84px}
+  .slide.active{opacity:1;pointer-events:auto;transform:none}
+  .slide.light{background:radial-gradient(1100px 560px at 82% -12%,var(--bg2),var(--bg))}
+  .slide.dark{background:radial-gradient(900px 600px at 78% -10%,#2136d6,#151a3f) , #141a3a;color:#fff}
+
+  .eyebrow{font-size:16px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--brand)}
+  .slide.dark .eyebrow{color:var(--gold)}
+  h1{font-size:62px;font-weight:850;letter-spacing:-1.6px;line-height:1.08}
+  h2{font-size:46px;font-weight:850;letter-spacing:-1px;line-height:1.12;margin-top:8px}
+  .lead{font-size:24px;color:var(--soft);line-height:1.6;font-weight:500}
+  .slide.dark .lead{color:#c9d0f5}
+  b.k{color:var(--brand)} .slide.dark b.k{color:var(--gold)}
+  .spacer{flex:1}
+
+  .foot{position:absolute;left:84px;right:84px;bottom:34px;display:flex;justify-content:space-between;
+    font-size:14px;color:var(--mute);font-weight:700;letter-spacing:.02em}
+  .slide.dark .foot{color:#8a93c8}
+  .foot .co b{color:var(--soft)} .slide.dark .foot .co b{color:#c9d0f5}
+
+  /* cover */
+  .logo{width:96px;height:96px;border-radius:26px;display:grid;place-items:center;font-size:54px;color:#fff;
+    background:linear-gradient(150deg,var(--brand2),var(--brand));box-shadow:0 22px 50px rgba(43,68,224,.55);transform:rotate(-6deg)}
+  .cover-title{font-size:88px;font-weight:900;letter-spacing:-3px;margin-top:26px}
+  .cover-title .tm{font-size:26px;vertical-align:super;color:var(--gold);font-weight:800}
+  .cover-en{font-size:20px;font-weight:800;letter-spacing:.42em;color:#9fb0ff;margin-top:6px}
+  .quote{font-family:var(--serif);font-size:30px;color:#fff;margin-top:30px;line-height:1.5}
+  .quote .drop{color:var(--gold)}
+  .badge-row{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+  .pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;padding:10px 18px;border-radius:999px;font-size:17px;font-weight:700}
+  .pill.gold{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+
+  /* team */
+  .members{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:38px}
+  .mcard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:0 10px 34px rgba(20,24,31,.08)}
+  .mcard .av{width:74px;height:74px;border-radius:20px;display:grid;place-items:center;font-size:40px;background:var(--brand-soft)}
+  .mcard.lead .av{background:#fff3d1}
+  .mcard .role{margin-top:16px;font-size:14px;font-weight:800;letter-spacing:.02em;color:var(--brand)}
+  .mcard.lead .role{color:var(--gold-ink)}
+  .mcard .nm{font-size:30px;font-weight:850;margin-top:2px}
+  .teamname{display:inline-flex;align-items:baseline;gap:12px}
+  .teamname .en{font-size:22px;color:var(--mute);font-weight:800;letter-spacing:.02em}
+
+  /* two columns */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}
+  .col{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px 26px 24px;box-shadow:0 10px 34px rgba(20,24,31,.07)}
+  .col h3{font-size:24px;font-weight:850;display:flex;align-items:center;gap:10px}
+  .col ul{list-style:none;margin-top:16px;display:grid;gap:12px}
+  .col li{font-size:19px;color:#2b3140;line-height:1.5;padding-left:28px;position:relative;font-weight:500}
+  .col li::before{content:"→";position:absolute;left:0;color:var(--brand);font-weight:800}
+  .col.leave li::before{content:"→";color:#9a4a10}
+
+  /* problem list */
+  .plist{display:grid;gap:16px;margin-top:30px;max-width:960px}
+  .prow{display:flex;gap:18px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 8px 26px rgba(20,24,31,.06)}
+  .prow .ic{font-size:32px;flex:none;line-height:1}
+  .prow .tx{font-size:21px;color:#232833;line-height:1.5} .prow .tx b{color:var(--ink)}
+  .punch{margin-top:26px;font-size:26px;font-weight:800;color:var(--brand-ink)}
+  .punch .hl{background:linear-gradient(transparent 62%,#ffe08a 62%);padding:0 4px}
+
+  /* feature cards */
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}
+  .fcard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(20,24,31,.07);display:flex;gap:18px;align-items:flex-start}
+  .fcard .fe{font-size:38px;line-height:1;flex:none}
+  .fcard h4{font-size:22px;font-weight:850}
+  .fcard p{font-size:17px;color:var(--soft);margin-top:6px;line-height:1.5}
+  .fcard .kill{display:inline-block;margin-top:10px;font-size:14px;font-weight:800;color:var(--reject);background:#fee2e2;padding:4px 10px;border-radius:999px}
+  .fcard.annual .kill{color:var(--brand);background:var(--brand-soft)}
+
+  /* running reject button deco */
+  .runbtn{position:absolute;right:96px;top:120px;background:#fff;border:2px solid var(--reject);color:var(--reject);
+    font-weight:800;font-size:20px;padding:12px 20px;border-radius:14px;box-shadow:0 16px 40px rgba(239,68,68,.3);transform:rotate(-8deg)}
+  .runbtn .leg{position:absolute;bottom:-11px;width:5px;height:14px;background:var(--reject);border-radius:3px;transform-origin:top center;animation:run .28s linear infinite}
+  .runbtn .leg.l{left:38%} .runbtn .leg.r{right:38%;animation-delay:-.14s}
+  @keyframes run{0%,100%{transform:rotate(26deg)}50%{transform:rotate(-26deg)}}
+
+  /* demo */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+  .step{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:26px 22px}
+  .step .no{width:44px;height:44px;border-radius:12px;background:var(--gold);color:var(--gold-ink);display:grid;place-items:center;font-size:22px;font-weight:900}
+  .step h4{font-size:21px;font-weight:850;margin-top:16px;color:#fff}
+  .step p{font-size:16px;color:#c9d0f5;margin-top:8px;line-height:1.5}
+  .urlbar{margin-top:34px;display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+    padding:14px 22px;border-radius:14px;font-size:22px;font-weight:800;color:#fff;letter-spacing:.01em}
+
+  /* tech badges */
+  .stack{display:grid;grid-template-columns:1fr 1fr;gap:16px 40px;margin-top:34px;max-width:1000px}
+  .srow{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px dashed var(--line2)}
+  .srow .lb{font-size:15px;font-weight:800;color:var(--mute);width:120px;flex:none;letter-spacing:.04em}
+  .srow .vl{font-size:20px;font-weight:750}
+  .srow .vl small{color:var(--soft);font-weight:600;font-size:15px}
+  .tnote{margin-top:26px;font-size:19px;color:var(--soft);font-weight:600}
+
+  /* retro timeline */
+  .journey{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+  .jstep{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 26px rgba(20,24,31,.06);position:relative;overflow:hidden}
+  .jstep .jn{font-size:14px;font-weight:900;color:#fff;background:var(--brand);width:34px;height:34px;border-radius:10px;display:grid;place-items:center}
+  .jstep h4{font-size:20px;font-weight:850;margin-top:14px}
+  .jstep p{font-size:15.5px;color:var(--soft);margin-top:6px;line-height:1.5}
+  .jstep .em{position:absolute;right:14px;top:12px;font-size:26px;opacity:.9}
+  .retro-punch{margin-top:26px;font-size:23px;font-weight:800;color:var(--brand-ink)}
+
+  /* closing */
+  .close-wrap{align-items:flex-start}
+  .thanks{font-size:82px;font-weight:900;letter-spacing:-2px}
+  .close-quote{font-family:var(--serif);font-size:34px;color:var(--gold);margin-top:24px}
+  .close-meta{margin-top:26px;font-size:22px;color:#c9d0f5;font-weight:700}
+  .close-meta b{color:#fff}
+
+  /* chrome */
+  .progress{position:absolute;top:0;left:0;height:5px;background:linear-gradient(90deg,var(--brand2),var(--gold));z-index:10;transition:width .35s ease}
+  .nav{position:absolute;right:22px;bottom:18px;display:flex;align-items:center;gap:10px;z-index:10}
+  .nav button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.85);
+    font-size:18px;cursor:pointer;color:#333;display:grid;place-items:center;transition:.15s}
+  .slide.dark ~ .nav button, .nav button{backdrop-filter:blur(6px)}
+  .nav button:hover{background:#fff}
+  .counter{position:absolute;left:24px;bottom:24px;font-size:14px;font-weight:800;color:var(--mute);z-index:10;letter-spacing:.05em}
+  .dots{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:10}
+  .dots i{width:9px;height:9px;border-radius:50%;background:rgba(120,130,160,.4);cursor:pointer;transition:.2s}
+  .dots i.on{background:var(--brand);width:26px;border-radius:6px}
+  .hint{position:absolute;right:24px;bottom:70px;font-size:13px;color:var(--mute);z-index:10;font-weight:700}
+  #cc{position:absolute;inset:0;pointer-events:none;z-index:9}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="stage" id="stage">
+    <div class="progress" id="progress"></div>
+    <canvas id="cc"></canvas>
+
+    <!-- 1 · COVER -->
+    <section class="slide dark active">
+      <div class="spacer"></div>
+      <div class="logo">🔪</div>
+      <div class="cover-title">빼박결재<span class="tm">™</span></div>
+      <div class="cover-en">K N I F E O F F</div>
+      <div class="lead" style="margin-top:14px;color:#c9d0f5">팀장이 <b class="k">거절할 수 없는</b> 내부 전자결재 시스템</div>
+      <div class="quote"><span class="drop">“</span>상신하는 순간, 승인은 이미 정해져 있다.<span class="drop">”</span></div>
+      <div class="badge-row">
+        <span class="pill gold">🏆 바이브코딩 대회</span>
+        <span class="pill">팀 · 리그오브레거시</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b></span><span>← → 방향키로 넘기기 · F 전체화면</span></div>
+    </section>
+
+    <!-- 2 · TEAM -->
+    <section class="slide light">
+      <div class="eyebrow">01 · Team</div>
+      <h1 style="margin-top:12px" class="teamname"><span>리그오브레거시</span><span class="en">League of Legacy</span></h1>
+      <div class="lead" style="margin-top:10px">전설(legend)을 만들러 왔지만, 결국 남긴 건 약간의 레거시(legacy) 🙂</div>
+      <div class="members">
+        <div class="mcard lead"><div class="av">🧑‍✈️</div><div class="role">팀장 · LEADER</div><div class="nm">이준승</div></div>
+        <div class="mcard"><div class="av">🧑‍💻</div><div class="role">팀원 · MEMBER</div><div class="nm">박태규</div></div>
+        <div class="mcard"><div class="av">🧑‍🔧</div><div class="role">팀원 · MEMBER</div><div class="nm">하민용</div></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>02</span></div>
+    </section>
+
+    <!-- 3 · BACKGROUND -->
+    <section class="slide light">
+      <div class="eyebrow">02 · Background</div>
+      <h1 style="margin-top:12px">결재의 비극 😮‍💨</h1>
+      <div class="plist">
+        <div class="prow"><span class="ic">🧑‍💻</span><span class="tx"><b>직원</b> — 칼퇴·연차 한 번 내려면 눈치 게임. 죄송한 말투, 장문의 사유, 그리고 반려 공포.</span></div>
+        <div class="prow"><span class="ic">🧑‍💼</span><span class="tx"><b>팀장</b> — 거절하면 빌런, 다 승인하면 호구. 이러지도 저러지도 못하는 딜레마.</span></div>
+        <div class="prow"><span class="ic">🔁</span><span class="tx"><b>결과</b> — 서로 눈치만 보다가, 결국 다 같이 참는다.</span></div>
+      </div>
+      <div class="punch">결재는 원래 <span class="hl">‘설득’</span>인데, 우리는 <span class="hl">‘눈치’</span>로 하고 있었다.</div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>03</span></div>
+    </section>
+
+    <!-- 4 · SOLUTION -->
+    <section class="slide light">
+      <div class="eyebrow">03 · Solution</div>
+      <h1 style="margin-top:12px">팀장이 <b class="k">‘구조적으로’</b> 거절할 수 없는 결재</h1>
+      <div class="cols">
+        <div class="col">
+          <h3>🧑‍💻 직원 뷰</h3>
+          <ul>
+            <li>목적 선택 — 연차 🌴 / 칼퇴 🔪</li>
+            <li>질문 몇 개 → <b>AI가 반려 불가능한 근거 5종</b> 자동 생성</li>
+            <li>대충 쓴 사유를 <b>절절한 읍소문</b>으로 포장 (LLM)</li>
+            <li>미리보기 → 상신</li>
+          </ul>
+        </div>
+        <div class="col leave">
+          <h3>🧑‍💼 팀장 뷰</h3>
+          <ul>
+            <li>상신 즉시 결재함에 <b>대기중</b>으로 도착</li>
+            <li>승인은 클릭 한 번, 쉬움</li>
+            <li>거절 버튼은… <b>구조적으로 불가능</b></li>
+            <li>승인 시 承認 도장 + 컨페티 🎉</li>
+          </ul>
+        </div>
+      </div>
+      <div class="punch" style="text-align:center">설득은 <span class="hl">자동화</span>, 거절은 <span class="hl">불가능</span>.</div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>04</span></div>
+    </section>
+
+    <!-- 5 · THE FUN -->
+    <section class="slide light">
+      <div class="runbtn">😱 거절<span class="leg l"></span><span class="leg r"></span></div>
+      <div class="eyebrow">04 · The Fun</div>
+      <h1 style="margin-top:12px">거절을 막는 장치들</h1>
+      <div class="fgrid">
+        <div class="fcard annual"><span class="fe">🏃</span><div><h4>도망가는 거절 버튼</h4><p>연차 거절 시, 버튼에 다리가 돋아 화면을 뛰어다님. 영원히 클릭 불가 → 결국 승인.</p><span class="kill">연차 전용</span></div></div>
+        <div class="fcard"><span class="fe">🧮</span><div><h4>못 푸는 반려 시험</h4><p>칼퇴 거절 시, reCAPTCHA “팀장이 맞습니까?” → 풀 수 없는 수학문제 / 없는 고양이 찾기.</p><span class="kill">칼퇴 전용</span></div></div>
+        <div class="fcard"><span class="fe">✨</span><div><h4>AI 읍소문</h4><p>“그냥 집 가고싶음 ㅋㅋ” → “존경하는 팀장님께 삼가 아뢰옵니다…” 극존칭으로 포장.</p></div></div>
+        <div class="fcard"><span class="fe">🎉</span><div><h4>승인의 쾌감</h4><p>承認 도장이 쾅! 컨페티가 터지고, 나칼퇴 사원은 칼같이 퇴근한다.</p></div></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>05</span></div>
+    </section>
+
+    <!-- 6 · DEMO -->
+    <section class="slide dark">
+      <div class="spacer"></div>
+      <div class="eyebrow">05 · Demo</div>
+      <h1 style="font-size:78px;margin-top:10px">지금, 직접 보여드립니다 🖥️</h1>
+      <div class="steps">
+        <div class="step"><div class="no">1</div><h4>대충 쓴 사유</h4><p>직원이 “그냥 쉬고싶음”이라고 적으면 AI가 읍소문을 대필.</p></div>
+        <div class="step"><div class="no">2</div><h4>상신 → 결재함</h4><p>한 브라우저에서 팀장 뷰로 전환하면 대기중으로 도착.</p></div>
+        <div class="step"><div class="no">3</div><h4>거절 시도</h4><p>도망 버튼 / 캡차 · 수학문제 → 결국 승인. 도장 + 컨페티.</p></div>
+      </div>
+      <div class="urlbar">🔗 knifeoff.vercel.app</div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b></span><span>06</span></div>
+    </section>
+
+    <!-- 7 · STACK -->
+    <section class="slide light">
+      <div class="eyebrow">06 · Tech Stack</div>
+      <h1 style="margin-top:12px">어떻게 만들었나</h1>
+      <div class="stack">
+        <div class="srow"><span class="lb">FRONTEND</span><span class="vl">React 18 + Vite <small>· SPA</small></span></div>
+        <div class="srow"><span class="lb">STORAGE</span><span class="vl">localStorage <small>· 백엔드 없이 시작</small></span></div>
+        <div class="srow"><span class="lb">AI</span><span class="vl">OpenRouter (GPT-4o-mini) <small>· 읍소문 생성</small></span></div>
+        <div class="srow"><span class="lb">BACKEND</span><span class="vl">Vercel Serverless <small>· API 키 서버 보관</small></span></div>
+        <div class="srow"><span class="lb">MATH</span><span class="vl">KaTeX <small>· 수식 렌더링</small></span></div>
+        <div class="srow"><span class="lb">DEPLOY</span><span class="vl">Vercel <small>· 자동 배포</small></span></div>
+      </div>
+      <div class="tnote">POC(목업·로컬스토리지) → 점진적으로 <b>LLM</b>, 그리고 <b>서버리스 백엔드</b>까지 확장.</div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>07</span></div>
+    </section>
+
+    <!-- 8 · RETRO -->
+    <section class="slide light">
+      <div class="eyebrow">07 · Retrospective</div>
+      <h1 style="margin-top:12px">바이브 코딩 협업기 🛠️</h1>
+      <div class="lead" style="margin-top:8px">여러 명이 바이브 코딩으로, 흩어진 목업을 하나의 서비스로 수렴시킨 과정.</div>
+      <div class="journey">
+        <div class="jstep"><span class="em">🎨</span><div class="jn">1</div><h4>각자 POC 목업</h4><p>팀원 각자 자기 버전의 프로토타입부터 시작.</p></div>
+        <div class="jstep"><span class="em">🧭</span><div class="jn">2</div><h4>베이스 선정</h4><p>가장 유사·완성도 높은 하나를 골라 그 위에서 합류.</p></div>
+        <div class="jstep"><span class="em">🧱</span><div class="jn">3</div><h4>하나씩 쌓기</h4><p>도망 버튼, 캡차, 고양이… 기능을 순차로 누적.</p></div>
+        <div class="jstep"><span class="em">🐛</span><div class="jn">4</div><h4>개별 버그 수정</h4><p>각자 맡은 부분을 병렬로 디버깅하며 안정화.</p></div>
+        <div class="jstep"><span class="em">✨</span><div class="jn">5</div><h4>LLM 연동</h4><p>가짜 AI 템플릿 → 진짜 LLM 읍소문 생성으로.</p></div>
+        <div class="jstep"><span class="em">🔌</span><div class="jn">6</div><h4>백엔드 연동</h4><p>서버리스 함수로 API 키 보호 + 실 서비스 연결.</p></div>
+      </div>
+      <div class="retro-punch">흩어진 목업 → 하나의 베이스 → 기능 누적 → 실서비스. <b>이게 바이브 코딩.</b></div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>리그오브레거시</b> · 빼박결재 KNIFEOFF™</span><span>08</span></div>
+    </section>
+
+    <!-- 9 · CLOSING -->
+    <section class="slide dark close-wrap">
+      <div class="spacer"></div>
+      <div class="logo" style="width:78px;height:78px;font-size:44px">🔪</div>
+      <div class="thanks">감사합니다 🙏</div>
+      <div class="close-quote">“거절은… 불가능합니다.”</div>
+      <div class="close-meta"><b>리그오브레거시</b> · 빼박결재 <b>KNIFEOFF™</b></div>
+      <div class="spacer"></div>
+      <div class="foot"><span class="co"><b>League of Legacy</b></span><span>09</span></div>
+    </section>
+
+  </div>
+
+  <div class="counter" id="counter">01 / 09</div>
+  <div class="dots" id="dots"></div>
+  <div class="hint">Space/→ 다음 · ← 이전</div>
+  <div class="nav">
+    <button id="prev" aria-label="이전">‹</button>
+    <button id="next" aria-label="다음">›</button>
+    <button id="full" aria-label="전체화면">⤢</button>
+  </div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length;
+  const stage=document.getElementById('stage');
+  const progress=document.getElementById('progress');
+  const counter=document.getElementById('counter');
+  const dotsWrap=document.getElementById('dots');
+  let cur=0, confettiDone=false;
+
+  slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>go(i);dotsWrap.appendChild(d);});
+  const dots=[...dotsWrap.children];
+
+  function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+  function pad(n){return String(n).padStart(2,'0');}
+
+  function go(i){
+    cur=Math.max(0,Math.min(total-1,i));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===cur));
+    progress.style.width=((cur+1)/total*100)+'%';
+    counter.textContent=pad(cur+1)+' / '+pad(total);
+    history.replaceState(null,'','#'+(cur+1));
+    if(cur===total-1 && !confettiDone){confettiDone=true;confetti();}
+    if(cur!==total-1) confettiDone=false;
+  }
+
+  addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown','ArrowDown'].includes(e.key)){e.preventDefault();go(cur+1);}
+    else if(['ArrowLeft','PageUp','ArrowUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+    else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(total-1);}
+    else if(e.key==='f'||e.key==='F'){toggleFull();}
+  });
+  document.getElementById('prev').onclick=()=>go(cur-1);
+  document.getElementById('next').onclick=()=>go(cur+1);
+  document.getElementById('full').onclick=toggleFull;
+  function toggleFull(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+
+  addEventListener('resize',fit);
+  fit();
+  const start=parseInt((location.hash||'#1').slice(1),10);
+  go(isNaN(start)?0:start-1);
+
+  // confetti (closing)
+  function confetti(){
+    const c=document.getElementById('cc');const ctx=c.getContext('2d');
+    c.width=1280;c.height=720;
+    const cols=['#2b44e0','#4d63ff','#ffcf33','#16a34a','#ef4444','#ffffff'];const P=[];
+    for(let i=0;i<180;i++)P.push({x:640+(Math.random()-.5)*400,y:300,vx:(Math.random()-.5)*13,vy:Math.random()*-15-4,
+      g:.34+Math.random()*.2,s:6+Math.random()*8,rot:Math.random()*6,vr:(Math.random()-.5)*.5,col:cols[i%cols.length]});
+    let f=0;(function t(){ctx.clearRect(0,0,c.width,c.height);f++;
+      P.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+        ctx.fillStyle=p.col;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
+      if(f<190)requestAnimationFrame(t);else ctx.clearRect(0,0,c.width,c.height);})();
+  }
+</script>
+</body>
+</html>

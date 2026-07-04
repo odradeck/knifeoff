@@ -446,9 +446,16 @@ p.sub { color: var(--ink-soft); margin: 0; }
 .exam .katex { color: #e8ecf5; font-size: 1.15em; }
 .exam .katex .mord, .exam .katex .mrel, .exam .katex .mbin, .exam .katex .mop { color: inherit; }
 .exam.cat-box {
-  background: #fff; border: 1px solid var(--line-2); position: relative; min-height: 220px;
-  cursor: crosshair; display: block; padding: 0;
+  background: linear-gradient(180deg, #fbfbff, #eef1fa); border: 1px solid var(--line-2);
+  position: relative; min-height: 200px; cursor: crosshair;
+  display: flex; flex-wrap: wrap; align-content: center; justify-content: center;
+  gap: 4px 2px; padding: 16px 14px;
 }
+.cat-decoy {
+  font-size: 30px; line-height: 1; user-select: none; cursor: crosshair;
+  transition: transform .12s ease; filter: saturate(.92);
+}
+.cat-decoy:hover { transform: scale(1.35) !important; filter: none; z-index: 1; }
 .cat-hint { font-size: 12px; color: var(--ink-mute); font-weight: 700; text-align: center; margin: 10px 2px 0; }
 .exam-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-mute); font-weight: 700; margin: 12px 2px 10px; }
 .exam-meta .red { color: var(--reject); }
